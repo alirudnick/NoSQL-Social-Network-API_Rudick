@@ -11,10 +11,11 @@ module.exports = {
   getSingleUser(req, res) {
     User.findOne({ _id: req.params.userId })
       .select('-__v')
-      .then((user) =>
+      .then((user) => {
         !user
           ? res.status(404).json({ message: 'No user with that ID' })
           : res.json(user)
+      }
       )
       .catch((err) => res.status(500).json(err));
   },
@@ -42,14 +43,19 @@ module.exports = {
   // Delete a user
   deleteUser(req, res) {
     User.findOneAndDelete({ _id: req.params.userId })
-      .then((user) =>
-        !user
-          ? res.status(404).json({ message: 'No user with that ID' })
-          : Application.deleteMany({ _id: { $in: user.applications } })
-      )
-      .then(() => res.json({ message: 'User and associated apps deleted!' }))
-      .catch((err) => res.status(500).json(err));
-  },
+      .then((user) => {
+        if (!user) {
+          res.status(404).json({ message: 'No user found with that ID' })
+          return;
+      }
+  })
+  .then((user) => {
+      res.json({ message: 'User delete successfully!' })
+  })
+  .catch((err) => {
+      res.status(400).json(err);
+  })
+},
 
   // add a friend
   addFriend(req, res) {
@@ -67,8 +73,9 @@ module.exports = {
     })
     .catch((err) => {
         res.status(400).json(err);
+    
     })
-},
+  },
 
 //delete a friend
 deleteFriend(req, res) {
@@ -88,5 +95,4 @@ deleteFriend(req, res) {
       res.status(400).json(err);
   })
 }
-
 };

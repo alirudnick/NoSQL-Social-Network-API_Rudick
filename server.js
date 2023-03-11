@@ -2,6 +2,7 @@ const express = require('express');
 const routes = require('./routes');
 const db = require('./config/connection');
 const app = express();
+//const mongodb = require('mongodb').MongoClient;
 const PORT = process.env.PORT || 3001;
 
 app.use(express.urlencoded({ extended: true }));

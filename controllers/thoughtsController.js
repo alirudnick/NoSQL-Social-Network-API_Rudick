@@ -6,17 +6,17 @@ module.exports = {
   // Then we return the results as JSON, and catch any errors. Errors are sent as JSON with a message and a 500 status code
   getThoughts(req, res) {
     Thought.find()
+      .sort({ createdAt: -1 })
       .then((thought) => res.json(thought))
       .catch((err) => res.status(500).json(err));
   },
-  // Gets a single application using the findOneAndUpdate method. We pass in the ID of the application and then respond with it, or an error if not found
-  getSingleApplication(req, res) {
+  getThoughtById (req, res) {
     Thought.findOne({ _id: req.params.thoughtId })
       .then((thought) =>
         !thought
           ? res.status(404).json({ message: 'No thought with that ID' })
           : res.json(thought)
-      )
+  )
       .catch((err) => res.status(500).json(err));
   },
   // Creates a new application. Accepts a request body with the entire Application object.
@@ -30,10 +30,10 @@ module.exports = {
           { new: true }
         );
       })
-      .then((user) =>
-        !user
+      .then((thought) =>
+        !thought
           ? res.status(404).json({
-              message: 'Thought created, but found no user with that ID',
+              message: 'Found no user with that ID',
             })
           : res.json('Thought successfully created! 🎉')
       )
@@ -45,26 +45,26 @@ module.exports = {
   // Updates and application using the findOneAndUpdate method. Uses the ID, and the $set operator in mongodb to inject the request body. Enforces validation.
   updateThoughtById(req, res) {
     Thought.findOneAndUpdate(
-      { _id: req.params.applicationId },
+      { _id: req.params.thoughtId },
       { $set: req.body },
       { runValidators: true, new: true }
     )
-      .then((application) =>
-        !application
+      .then((user) =>
+        !user
           ? res.status(404).json({ message: 'No thought found with this id!' })
-          : res.json(application)
+          : res.json(user)
       )
       .catch((err) => {
         console.log(err);
         res.status(500).json(err);
       });
   },
-  // Deletes an application from the database. Looks for an app by ID.
+  // Deletes a thought from the database. Looks for an app by ID.
   // Then if the app exists, we look for any users associated with the app based on he app ID and update the applications array for the User.
-  this.deleteThoughtById(req, res) {
-    Thought.findOneAndRemove({ _id: req.params.applicationId })
+  deleteThoughtById(req, res) {
+    Thought.findOneAndRemove({ _id: req.params.thoughtId })
       .then((thought) =>
-        !application
+        !thought
           ? res.status(404).json({ message: 'No thought with this id!' })
           : User.findOneAndUpdate(
               { thoughts: req.params.thoughtId },
@@ -75,14 +75,14 @@ module.exports = {
       .then((user) =>
         !user
           ? res.status(404).json({
-              message: 'Application created but no user with this id!',
+              message: 'Thought created but no user with this id!',
             })
-          : res.json({ message: 'Application successfully deleted!' })
+          : res.json({ message: 'Thought successfully deleted!' })
       )
       .catch((err) => res.status(500).json(err));
   },
      // Create reaction 
-     createReaction(req, res) {
+     addReaction(req, res) {
       Thought.findOneAndUpdate(
           { _id: req.params.thoughtId },
           { $push: { reactions: req.body } },
@@ -100,7 +100,7 @@ module.exports = {
       })
   },
   // Remove reaction
-  removeReaction(req, res) {
+  deleteReaction(req, res) {
       Thought.findOneAndUpdate(
           { _id: req.params.thoughtId },
           { $pull: { reactions: { reactionId: req.params.reactionId } } },
