@@ -15,9 +15,9 @@ const {
 router.route('/').get(getUsers).post(createUser);
  
 
-router.route('/users').get(getUsers).post(createUser);
-router.route('/users/:userId').get(getSingleUser).put(updateUser).delete(deleteUser);
-router.route('/users/:userId/friends/:friendId').post(addFriend).delete(deleteFriend);
+router.route('/').get(getUsers).post(createUser);
+router.route('/:userId').get(getSingleUser).put(updateUser).delete(deleteUser);
+router.route('/:userId/friends/:friendId').post(addFriend).delete(deleteFriend);
 
 router.route('/:userId/friends/:friendId')
 .post(addFriend)
