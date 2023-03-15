@@ -9,9 +9,7 @@ GIVEN a social network API WHEN I enter the command to invoke the application TH
 ## Preview and Link
 
 
-
-Uploading Ch.18.mp4…
-
+https://user-images.githubusercontent.com/107882457/225186908-796ea2d4-dfad-416e-bae6-1c101ad02e17.mov
 
 
 https://github.com/alirudnick/NoSQL-Social-Network-API_Rudick
